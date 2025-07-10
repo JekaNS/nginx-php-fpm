@@ -69,15 +69,22 @@ RUN docker-php-ext-configure gd \
       --with-freetype \
       --with-jpeg && \
     docker-php-ext-install gd && \
-    docker-php-ext-install pdo_mysql mysqli pdo_sqlite pgsql pdo_pgsql exif intl xsl soap zip &&\
+    docker-php-ext-install pdo_mysql mysqli pdo_sqlite pgsql pdo_pgsql exif intl xsl soap zip sockets &&\
     docker-php-source delete
 
 # Install PHP modules
 RUN apk add php84-pecl-redis && \
-    apk add php84-pecl-xdebug && \
+    apk add php84-pecl-igbinary && \
     apk add php84-pecl-mongodb && \
     apk add php84-pecl-grpc && \
-    for so in /usr/lib/php84/modules/*.so; do name=$(basename "$so" .so); [ ! -f "/usr/local/etc/php/conf.d/$name.ini" ] && echo "extension=$so" > "/usr/local/etc/php/conf.d/$name.ini"; done
+    apk add php84-pecl-msgpack && \
+    apk add php84-pecl-xdebug && \
+    echo "extension=/usr/lib/php84/modules/redis.so" > /usr/local/etc/php/conf.d/redis.ini && \
+    echo "extension=/usr/lib/php84/modules/igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini && \
+    echo "extension=/usr/lib/php84/modules/mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini && \
+    echo "extension=/usr/lib/php84/modules/grpc.so" > /usr/local/etc/php/conf.d/grpc.ini && \
+    echo "extension=/usr/lib/php84/modules/msgpack.so" > /usr/local/etc/php/conf.d/msgpack.ini && \
+    echo "zend_extension=/usr/lib/php84/modules/xdebug.so" > /usr/local/etc/php/conf.d/xdebug.ini
 
 # Install composer and certbot
 RUN mkdir -p /var/www/app && \
@@ -127,11 +134,10 @@ RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
         -e "s/listen = 127.0.0.1:9000/listen = \/var\/run\/php-fpm.sock/g" \
         -e "s/^;clear_env = no$/clear_env = no/" \
         ${fpm_conf}
-#    ln -s /etc/php7/php.ini /etc/php7/conf.d/php.ini && \
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
 	sed -i \
 	    -e "s/;opcache/opcache/g" \
-	    -e "s/;zend_extension=opcache/zend_extension=opcache/g" \
+#	    -e "s/;zend_extension=opcache/zend_extension=opcache/g" \
             /usr/local/etc/php/php.ini
 
 
