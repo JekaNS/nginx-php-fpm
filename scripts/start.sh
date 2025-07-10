@@ -3,7 +3,7 @@
 # Disable Strict Host checking for non interactive git clones
 
 mkdir -p -m 0700 /root/.ssh
-# Prevent config files from being filled to infinity by force of stop and restart the container 
+# Prevent config files from being filled to infinity by force of stop and restart the container
 echo "" > /root/.ssh/config
 echo -e "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
 
@@ -158,22 +158,19 @@ if [ ! -z "$PHP_UPLOAD_MAX_FILESIZE" ]; then
 fi
 
 # Enable xdebug
-XdebugFile='/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini'
+XdebugFile='/usr/local/etc/php/conf.d/xdebug.ini'
 if [[ "$ENABLE_XDEBUG" == "1" ]] ; then
   if [ -f $XdebugFile ]; then
   	echo "Xdebug enabled"
   else
   	echo "Enabling xdebug"
-  	echo "If you get this error, you can safely ignore it: /usr/local/bin/docker-php-ext-enable: line 83: nm: not found"
-  	# see https://github.com/docker-library/php/pull/420
-    docker-php-ext-enable xdebug
+    echo "zend_extension=/usr/lib/php84/modules/xdebug.so" > $XdebugFile
     # see if file exists
     if [ -f $XdebugFile ]; then
         # See if file contains xdebug text.
-        if grep -q xdebug.remote_enable "$XdebugFile"; then
+        if grep -q xdebug.mode=debug "$XdebugFile"; then
             echo "Xdebug already enabled... skipping"
         else
-            echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > $XdebugFile # Note, single arrow to overwrite file.
             echo "xdebug.client_host=host.docker.internal" >> $XdebugFile
             echo "xdebug.mode=debug" >> $XdebugFile
             echo "xdebug.log=/tmp/xdebug.log"  >> $XdebugFile

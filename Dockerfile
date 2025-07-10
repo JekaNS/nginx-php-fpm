@@ -73,18 +73,19 @@ RUN docker-php-ext-configure gd \
     docker-php-source delete
 
 # Install PHP modules
-RUN apk add php84-pecl-redis && \
+RUN apk add php84-pecl-imagick && \
+    apk add php84-pecl-redis && \
     apk add php84-pecl-igbinary && \
     apk add php84-pecl-mongodb && \
     apk add php84-pecl-grpc && \
     apk add php84-pecl-msgpack && \
     apk add php84-pecl-xdebug && \
+    echo "extension=/usr/lib/php84/modules/imagick.so" > /usr/local/etc/php/conf.d/imagick.ini && \
     echo "extension=/usr/lib/php84/modules/redis.so" > /usr/local/etc/php/conf.d/redis.ini && \
     echo "extension=/usr/lib/php84/modules/igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini && \
     echo "extension=/usr/lib/php84/modules/mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini && \
     echo "extension=/usr/lib/php84/modules/grpc.so" > /usr/local/etc/php/conf.d/grpc.ini && \
-    echo "extension=/usr/lib/php84/modules/msgpack.so" > /usr/local/etc/php/conf.d/msgpack.ini && \
-    echo "zend_extension=/usr/lib/php84/modules/xdebug.so" > /usr/local/etc/php/conf.d/xdebug.ini
+    echo "extension=/usr/lib/php84/modules/msgpack.so" > /usr/local/etc/php/conf.d/msgpack.ini
 
 # Install composer and certbot
 RUN mkdir -p /var/www/app && \
