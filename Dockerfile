@@ -62,22 +62,25 @@ RUN apk add --no-cache --virtual .sys-deps \
     zlib-dev \
     libxpm-dev \
     libpng \
-    libpng-dev && \
-  # Install PHP modules
-    docker-php-ext-configure gd \
+    libpng-dev
+# Install PHP modules
+RUN docker-php-ext-configure gd \
       --enable-gd \
       --with-freetype \
       --with-jpeg && \
     docker-php-ext-install gd && \
-    docker-php-ext-install pdo_mysql mysqli pdo_sqlite pgsql pdo_pgsql exif intl xsl soap zip && \
-    pecl install -o -f xdebug && \
-    pecl install -o -f redis && \
-    pecl install -o -f mongodb && \
-    echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini && \
-    echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini && \
-    docker-php-source delete && \
-    mkdir -p /var/www/app && \
-  # Install composer and certbot
+    docker-php-ext-install pdo_mysql mysqli pdo_sqlite pgsql pdo_pgsql exif intl xsl soap zip &&\
+    docker-php-source delete
+
+# Install PHP modules
+RUN apk add php84-pecl-redis && \
+    apk add php84-pecl-xdebug && \
+    apk add php84-pecl-mongodb && \
+    apk add php84-pecl-grpc && \
+    for so in /usr/lib/php84/modules/*.so; do name=$(basename "$so" .so); [ ! -f "/usr/local/etc/php/conf.d/$name.ini" ] && echo "extension=$so" > "/usr/local/etc/php/conf.d/$name.ini"; done
+
+# Install composer and certbot
+RUN mkdir -p /var/www/app && \
     mkdir -p /var/log/supervisor && \
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     php composer-setup.php --quiet --install-dir=/usr/bin --filename=composer && \
