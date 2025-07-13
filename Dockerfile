@@ -81,8 +81,7 @@ RUN apk add imagemagick && \
     apk add imagemagick-heic && \
     apk add imagemagick-static && \
     apk add imagemagick-raw && \
-    apk add imagemagick-libs && \
-
+    apk add imagemagick-libs
 
 # Install PHP modules
 RUN apk add php84-pecl-imagick && \
