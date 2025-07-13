@@ -75,7 +75,14 @@ RUN docker-php-ext-configure gd \
 #install ImageMagick
 RUN apk add imagemagick && \
     apk add imagemagick-jpeg && \
-    apk add imagemagick-webp
+    apk add imagemagick-webp && \
+    apk add imagemagick-tiff && \
+    apk add imagemagick-svg && \
+    apk add imagemagick-heic && \
+    apk add imagemagick-static && \
+    apk add imagemagick-raw && \
+    apk add imagemagick-libs && \
+
 
 # Install PHP modules
 RUN apk add php84-pecl-imagick && \
