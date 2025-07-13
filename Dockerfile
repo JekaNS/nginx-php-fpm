@@ -72,6 +72,11 @@ RUN docker-php-ext-configure gd \
     docker-php-ext-install pdo_mysql mysqli pdo_sqlite pgsql pdo_pgsql exif intl xsl soap zip sockets &&\
     docker-php-source delete
 
+#install ImageMagick
+RUN apk add imagemagick && \
+    apk add imagemagick-jpeg && \
+    apk add imagemagick-webp
+
 # Install PHP modules
 RUN apk add php84-pecl-imagick && \
     apk add php84-pecl-redis && \
