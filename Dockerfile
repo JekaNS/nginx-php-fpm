@@ -44,7 +44,8 @@ RUN echo @testing https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk
     libjpeg-turbo-dev \
     freetype-dev \
     libxslt-dev \
-    gcc
+    gcc \
+    mc
 
 RUN apk add --no-cache --virtual .sys-deps \
     musl-dev \
