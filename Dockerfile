@@ -1,4 +1,4 @@
-FROM php:8.4.10-fpm-alpine3.22
+FROM php:8.4-alpine3.22-fpm
 
 LABEL maintainer="Ric Harvey <ric@squarecows.com>"
 
@@ -45,6 +45,7 @@ RUN echo @testing https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk
     freetype-dev \
     libxslt-dev \
     gcc \
+    icu-data-full \
     mc
 
 RUN apk add --no-cache --virtual .sys-deps \
